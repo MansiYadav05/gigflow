@@ -441,9 +441,7 @@ const Dashboard: React.FC = () => {
                         type="button"
                         onClick={() => setIsModalOpen(false)}
                         className="px-5 py-2 text-text-secondary font-medium hover:text-text-primary"
-                      >
-                        Cancel
-                      </button>
+                      > Cancel </button>
                       <button type="submit" className="btn-primary">
                         {currentLead?._id ? 'Save changes' : 'Create Lead'}
                       </button>
