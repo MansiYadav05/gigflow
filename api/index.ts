@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import { body } from "express-validator";
-import { setupDB, User, Lead, JWT_SECRET, AuthenticatedRequest } from "./lib/db";
+import { setupDB, User, Lead, JWT_SECRET, AuthenticatedRequest } from "./lib/db.js";
 import { authMiddleware, adminMiddleware, dbCheck, errorHandler, validate } from "./lib/middleware";
 
 const DATA_LIMIT = 10;
