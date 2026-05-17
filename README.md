@@ -44,6 +44,8 @@ NODE_ENV=development
 ### 3. Installation
 ```bash
 npm install
+# Install Vercel CLI globally to run the project locally
+npm install -g vercel
 ```
 
 ### 4. Running the Project

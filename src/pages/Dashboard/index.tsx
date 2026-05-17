@@ -454,96 +454,97 @@ const Dashboard: React.FC = () => {
             </div>
           )}
         </AnimatePresence>
-      </div >
-      );
+      </div>
+    </div>
+  );
 };
 
-      // Sub-components
-      const StatCard = ({icon, label, value}: {icon: React.ReactNode, label: string, value: number }) => (
-      <div className="bg-bg-surface border border-border rounded-[10px] p-4 flex items-center gap-4">
-        <div className="w-[34px] h-[34px] rounded-full bg-accent-soft flex items-center justify-center text-accent">
-          {icon}
-        </div>
-        <div>
-          <p className="text-text-secondary text-[11px] font-medium leading-tight mb-0.5">{label}</p>
-          <p className="text-text-primary text-[20px] font-bold leading-tight">{value}</p>
-        </div>
-      </div>
-      );
+// Sub-components
+const StatCard = ({ icon, label, value }: { icon: React.ReactNode, label: string, value: number }) => (
+  <div className="bg-bg-surface border border-border rounded-[10px] p-4 flex items-center gap-4">
+    <div className="w-[34px] h-[34px] rounded-full bg-accent-soft flex items-center justify-center text-accent">
+      {icon}
+    </div>
+    <div>
+      <p className="text-text-secondary text-[11px] font-medium leading-tight mb-0.5">{label}</p>
+      <p className="text-text-primary text-[20px] font-bold leading-tight">{value}</p>
+    </div>
+  </div>
+);
 
-      const StatusBadge = ({status}: {status: LeadStatus }) => {
+const StatusBadge = ({ status }: { status: LeadStatus }) => {
   const styles = {
-        [LeadStatus.NEW]: {bg: 'bg-status-new/10', text: 'text-status-new', dot: 'bg-status-new' },
-      [LeadStatus.CONTACTED]: {bg: 'bg-status-contacted/10', text: 'text-status-contacted', dot: 'bg-status-contacted' },
-      [LeadStatus.QUALIFIED]: {bg: 'bg-status-qualified/10', text: 'text-status-qualified', dot: 'bg-status-qualified' },
-      [LeadStatus.LOST]: {bg: 'bg-status-lost/10', text: 'text-status-lost', dot: 'bg-status-lost' },
+    [LeadStatus.NEW]: { bg: 'bg-status-new/10', text: 'text-status-new', dot: 'bg-status-new' },
+    [LeadStatus.CONTACTED]: { bg: 'bg-status-contacted/10', text: 'text-status-contacted', dot: 'bg-status-contacted' },
+    [LeadStatus.QUALIFIED]: { bg: 'bg-status-qualified/10', text: 'text-status-qualified', dot: 'bg-status-qualified' },
+    [LeadStatus.LOST]: { bg: 'bg-status-lost/10', text: 'text-status-lost', dot: 'bg-status-lost' },
   }[status];
 
-      return (
-      <span className={`inline-flex items-center gap-1.5 px-[10px] py-[4px] rounded-full text-[10px] font-semibold ${styles.bg} ${styles.text}`}>
-        <span className={`w-1.5 h-1.5 rounded-full ${styles.dot}`} />
-        {status}
-      </span>
-      );
+  return (
+    <span className={`inline-flex items-center gap-1.5 px-[10px] py-[4px] rounded-full text-[10px] font-semibold ${styles.bg} ${styles.text}`}>
+      <span className={`w-1.5 h-1.5 rounded-full ${styles.dot}`} />
+      {status}
+    </span>
+  );
 };
 
-      const SkeletonRows = ({count}: {count: number }) => (
-      <>
-        {[...Array(count)].map((_, i) => (
-          <tr key={i} className="border-b border-border animate-shimmer">
-            <td colSpan={6} className="px-6 py-[18px]">
-              <div className="flex gap-4">
-                <div className="w-8 h-8 rounded-full bg-bg-elevated" />
-                <div className="flex-1 space-y-2 py-1">
-                  <div className="h-2 bg-bg-elevated rounded w-1/4" />
-                  <div className="h-2 bg-bg-elevated rounded w-1/3 opacity-50" />
-                </div>
-              </div>
-            </td>
-          </tr>
-        ))}
-      </>
-      );
+const SkeletonRows = ({ count }: { count: number }) => (
+  <>
+    {[...Array(count)].map((_, i) => (
+      <tr key={i} className="border-b border-border animate-shimmer">
+        <td colSpan={6} className="px-6 py-[18px]">
+          <div className="flex gap-4">
+            <div className="w-8 h-8 rounded-full bg-bg-elevated" />
+            <div className="flex-1 space-y-2 py-1">
+              <div className="h-2 bg-bg-elevated rounded w-1/4" />
+              <div className="h-2 bg-bg-elevated rounded w-1/3 opacity-50" />
+            </div>
+          </div>
+        </td>
+      </tr>
+    ))}
+  </>
+);
 
-      interface FormInputProps {
-        label: string;
-      value: string;
+interface FormInputProps {
+  label: string;
+  value: string;
   onChange: (val: string) => void;
-      type?: string;
-      required?: boolean;
+  type?: string;
+  required?: boolean;
 }
 
-      const FormInput = ({label, value, onChange, type = "text", required}: FormInputProps) => (
-      <div>
-        <label className="block text-[11px] font-medium text-text-secondary mb-1.5 ml-1">{label}</label>
-        <input
-          type={type}
-          required={required}
-          value={value}
-          onChange={e => onChange(e.target.value)}
-          className="w-full h-10 px-4 bg-bg-input border border-border rounded-lg outline-none focus:border-border-focus text-[13px] text-text-primary transition-colors"
-        />
-      </div>
-      );
+const FormInput = ({ label, value, onChange, type = "text", required }: FormInputProps) => (
+  <div>
+    <label className="block text-[11px] font-medium text-text-secondary mb-1.5 ml-1">{label}</label>
+    <input
+      type={type}
+      required={required}
+      value={value}
+      onChange={e => onChange(e.target.value)}
+      className="w-full h-10 px-4 bg-bg-input border border-border rounded-lg outline-none focus:border-border-focus text-[13px] text-text-primary transition-colors"
+    />
+  </div>
+);
 
-      interface FormSelectProps {
-        label: string;
-      value: string;
+interface FormSelectProps {
+  label: string;
+  value: string;
   onChange: (val: string) => void;
-      options: string[];
+  options: string[];
 }
 
-      const FormSelect = ({label, value, onChange, options}: FormSelectProps) => (
-      <div>
-        <label className="block text-[11px] font-medium text-text-secondary mb-1.5 ml-1">{label}</label>
-        <select
-          value={value}
-          onChange={e => onChange(e.target.value)}
-          className="w-full h-10 px-3 bg-bg-input border border-border rounded-lg outline-none focus:border-border-focus text-[13px] text-text-primary transition-colors"
-        >
-          {options.map((opt: string) => <option key={opt} value={opt}>{opt}</option>)}
-        </select>
-      </div>
-      );
+const FormSelect = ({ label, value, onChange, options }: FormSelectProps) => (
+  <div>
+    <label className="block text-[11px] font-medium text-text-secondary mb-1.5 ml-1">{label}</label>
+    <select
+      value={value}
+      onChange={e => onChange(e.target.value)}
+      className="w-full h-10 px-3 bg-bg-input border border-border rounded-lg outline-none focus:border-border-focus text-[13px] text-text-primary transition-colors"
+    >
+      {options.map((opt: string) => <option key={opt} value={opt}>{opt}</option>)}
+    </select>
+  </div>
+);
 
-      export default Dashboard;
+export default Dashboard;
