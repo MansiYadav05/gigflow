@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-import { AuthenticatedRequest, JWT_SECRET } from "./db";
+import { AuthenticatedRequest, JWT_SECRET } from "./db.js";
 import { validationResult } from "express-validator";
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
