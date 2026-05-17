@@ -12,9 +12,7 @@
     },
     "functions": {
         "api/index.ts": {
-            "runtime": "nodejs20.x",
-            "memory": 1024,
-            "timeout": 30
+            "runtime": "nodejs20.x"
         }
     },
     "rewrites": [
