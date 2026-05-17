@@ -6,3 +6,9 @@ coverage/
 *.log
 .env*
 !.env.example
+!.env.docker
+
+# Docker volumes and data
+mongodb_data/
+mongodb_config/
+backup/

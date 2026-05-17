@@ -2,6 +2,12 @@
 
 A high-performance full-stack MERN dashboard for managing sales pipelines.
 
+## 🚀 Product Use
+GigFlow allows sales teams to track potential clients through various stages (New, Contacted, Qualified, Lost). 
+- **Sales Representative** can create and update leads to maintain a healthy pipeline.
+- **Administrators** gain access to high-level statistics and the ability to prune the database by deleting records.
+- **Data Portability:** Quickly export filtered lead lists to CSV for external reporting.
+
 ## Features
 - **Auth:** JWT-based authentication with bcrypt password hashing.
 - **Leads CRUD:** Full management for sales and administrators.
@@ -10,6 +16,41 @@ A high-performance full-stack MERN dashboard for managing sales pipelines.
 - **CSV Export:** Pure JS implementation for downloading lead data.
 - **Responsive Design:** Optimized for mission-control style desktop views and mobile access.
 - **Dark Mode:** System-persistent dark theme support.
+
+## 🛠 Tech Stack
+- **Frontend:** React 18, Vite, Tailwind CSS v4 (using semantic @theme variables), Framer Motion.
+- **Backend:** Node.js, Express, TypeScript.
+- **Authentication:** JSON Web Tokens (JWT) & BcryptJS.
+- **Icons & UI:** Lucide React, Sonner (Toasts).
+
+## 🗄 Database
+The project uses **MongoDB** via the Mongoose ODM.
+- **Production/Cloud:** Connects to MongoDB Atlas via the `MONGO_URI` environment variable.
+- **Development Fallback:** If no URI is provided, the server automatically spins up a `mongodb-memory-server` instance. This allows for immediate testing without external dependencies, though data is volatile in this mode.
+
+## ⚙️ Configuration & Setup
+### 1. Prerequisites
+- Node.js (v18+)
+- npm or yarn
+
+### 2. Environment Variables
+Create a `.env` file in the root directory:
+```env
+PORT=3000
+MONGO_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/gigflow
+JWT_SECRET=your_super_secret_key
+NODE_ENV=development
+
+### 3. Installation
+```bash
+npm install
+```
+
+### 4. Running the Project
+```bash
+# Runs the Express server and Vite HMR concurrently
+npm run dev
+```
 
 ## Project Structure
 - `/server.ts`: Combined Express server and Vite middleware.
@@ -35,3 +76,21 @@ A high-performance full-stack MERN dashboard for managing sales pipelines.
 - `MONGO_URI`: MongoDB connection string (falls back to In-Memory for preview).
 - `JWT_SECRET`: Secret key for token signing.
 - `VITE_API_BASE_URL`: Base path for frontend API calls.
+
+## ⚠️ Error Handling
+
+### Server-Side
+The backend implements a centralized error-handling middleware (`errorHandler` in `server.ts`).
+- **Validation Errors:** Uses `express-validator` to return 400 Bad Request with a detailed array of field errors.
+- **Authentication Errors:** Returns 401 Unauthorized for missing or invalid tokens.
+- **RBAC Errors:** Returns 403 Forbidden when a sales representative attempts admin actions (like deleting a lead).
+- **Database Connectivity:** The `dbCheck` middleware ensures the API returns a 503 Service Unavailable if the MongoDB connection is dropped, preventing app crashes.
+
+### Client-Side
+The frontend uses **Axios Interceptors** to handle global error states:
+- **Token Expiry:** Automatically logs the user out if the JWT expires.
+- **Toasts:** Utilizes `sonner` to display user-friendly error messages for failed submissions or network issues.
+
+---
+Developed as a high-performance MERN solution.
+```
