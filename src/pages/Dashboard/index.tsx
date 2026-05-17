@@ -343,9 +343,9 @@ const Dashboard: React.FC = () => {
                   </tr>
                 )}
               </tbody>
-            </table >
-          </div >
-        </div >
+            </table>
+          </div>
+        </div>
 
         {/* Pagination */}
         {
