@@ -52,6 +52,31 @@ npm install
 npm run dev
 ```
 
+### 5. Docker Setup (Optional)
+GigFlow includes complete Docker containerization for development and production:
+
+```bash
+# Start with Docker Compose (includes MongoDB)
+docker-compose up --build
+
+# Access the app at http://localhost:3000
+# MongoDB runs on localhost:27017
+```
+
+**Files Included:**
+- `Dockerfile` - Multi-stage production build (optimized ~500MB image)
+- `docker-compose.yml` - Local development (app + MongoDB)
+- `docker-compose.prod.yml` - Production deployment with environment variables
+- `init-mongo.js` - Auto-initializes MongoDB with schema and indexes
+
+**Key Features:**
+- ✅ Hot-reload with volume mounts
+- ✅ Auto-initialized MongoDB (users & leads collections)
+- ✅ Health checks for both services
+- ✅ Data persistence with named volumes
+- ✅ Non-root user and security best practices
+
+
 ## Project Structure
 - `/server.ts`: Combined Express server and Vite middleware.
 - `/src/pages`: Dashboard, Login, Register, and Lead Details.
