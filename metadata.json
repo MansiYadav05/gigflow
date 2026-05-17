@@ -1,8 +1,0 @@
-{
-  "name": "GigFlow - Smart Leads Dashboard",
-  "description": "A full-stack MERN dashboard for managing sales leads with JWT auth, server-side filtering, pagination, and RBAC.",
-  "requestFramePermissions": [],
-  "majorCapabilities": [
-    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
-  ]
-}

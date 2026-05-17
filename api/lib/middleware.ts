@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import { AuthenticatedRequest, JWT_SECRET } from "./db";
+import { validationResult } from "express-validator";
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const token = req.headers.authorization?.split(" ")[1];
@@ -25,9 +26,9 @@ export const adminMiddleware = (req: Request, res: Response, next: NextFunction)
 };
 
 export const validate = (req: Request, res: Response, next: NextFunction) => {
-  const errors = (req as any).validationErrors;
-  if (errors && errors.length > 0) {
-    return res.status(400).json({ success: false, message: "Validation failed", error: errors });
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, message: "Validation failed", error: errors.array() });
   }
   next();
 };

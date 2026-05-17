@@ -11,13 +11,18 @@ export interface AuthenticatedRequest {
   };
 }
 
+let cachedConnection: typeof mongoose | null = null;
+
 // --- DATABASE SETUP ---
 export async function setupDB() {
+  if (cachedConnection && mongoose.connection.readyState === 1) {
+    return cachedConnection;
+  }
+
   const MONGO_URI = process.env.MONGO_URI;
   
   if (!MONGO_URI || MONGO_URI.trim() === "") {
-    console.error("MONGO_URI not set in environment variables");
-    throw new Error("MongoDB connection string not configured");
+    throw new Error("MONGO_URI is missing in environment variables");
   }
 
   try {
@@ -33,9 +38,11 @@ export async function setupDB() {
       retryReads: true,
       appName: "GigFlow-CMS",
     });
+    cachedConnection = mongoose;
     console.log("SUCCESS: Connected to MongoDB Atlas");
+    return cachedConnection;
   } catch (err: any) {
-    console.error("FAILURE: MongoDB Connection Error:", err.message);
+    console.error("FAILURE: MongoDB Connection:", err.message);
     throw err;
   }
 }

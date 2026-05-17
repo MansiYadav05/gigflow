@@ -3,9 +3,10 @@ import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { body, validationResult } from "express-validator";
+import mongoose from "mongoose";
+import { body } from "express-validator";
 import { setupDB, User, Lead, JWT_SECRET, AuthenticatedRequest } from "./lib/db";
-import { authMiddleware, adminMiddleware, dbCheck, errorHandler } from "./lib/middleware";
+import { authMiddleware, adminMiddleware, dbCheck, errorHandler, validate } from "./lib/middleware";
 
 const DATA_LIMIT = 10;
 
@@ -14,21 +15,20 @@ app.use(cors());
 app.use(express.json());
 
 // Initialize DB once
-let dbInitialized = false;
-const initializeDB = async () => {
-  if (!dbInitialized) {
-    try {
-      await setupDB();
-      dbInitialized = true;
-    } catch (err) {
-      console.error("Failed to initialize database:", err);
-    }
+const initializeDB = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    await setupDB();
+    next();
+  } catch (err) {
+    console.error("DB Init Error:", err);
+    res.status(503).json({ success: false, message: "Database initialization failed" });
   }
 };
 
+app.use(initializeDB);
+
 // Health Check
 app.get("/api/health", (req, res) => {
-  const mongoose = require("mongoose");
   const dbState = ["disconnected", "connected", "connecting", "disconnecting"][mongoose.connection.readyState];
   res.json({
     success: true,
@@ -45,14 +45,9 @@ app.post("/api/auth/register",
     body("email").isEmail().withMessage("Valid email is required"),
     body("password").isLength({ min: 6 }).withMessage("Password must be at least 6 characters"),
   ],
+  validate,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await initializeDB();
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ success: false, message: "Validation failed", error: errors.array() });
-      }
-
       const { name, email, password, role } = req.body;
       const exists = await User.findOne({ email });
       if (exists) {
@@ -84,14 +79,9 @@ app.post("/api/auth/login",
     body("email").isEmail().withMessage("Valid email is required"),
     body("password").notEmpty().withMessage("Password is required"),
   ],
+  validate,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await initializeDB();
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ success: false, message: "Validation failed", error: errors.array() });
-      }
-
       const { email, password } = req.body;
       const user = await User.findOne({ email });
       if (!user) {
@@ -123,7 +113,6 @@ app.post("/api/auth/login",
 // Stats Route
 app.get("/api/stats", authMiddleware, adminMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await initializeDB();
     const totalLeads = await Lead.countDocuments();
     const qualifiedLeads = await Lead.countDocuments({ status: "Qualified" });
     const lostLeads = await Lead.countDocuments({ status: "Lost" });
@@ -149,7 +138,6 @@ app.get("/api/stats", authMiddleware, adminMiddleware, async (req: Request, res:
 // Leads Routes
 app.get("/api/leads", authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await initializeDB();
     const { status, source, search, sort, page = 1 } = req.query;
     const query: any = {};
 
@@ -189,7 +177,6 @@ app.get("/api/leads", authMiddleware, async (req: Request, res: Response, next: 
 
 app.get("/api/leads/export", authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await initializeDB();
     const { status, source, search } = req.query as any;
     const query: any = {};
 
@@ -211,7 +198,6 @@ app.get("/api/leads/export", authMiddleware, async (req: Request, res: Response,
 
 app.get("/api/leads/:id", authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await initializeDB();
     const lead = await Lead.findById(req.params.id);
     if (!lead) return res.status(404).json({ success: false, message: "Lead not found" });
     res.json({ success: true, data: lead });
@@ -226,14 +212,9 @@ app.post("/api/leads",
     body("name").notEmpty().withMessage("Name is required"),
     body("email").isEmail().withMessage("Valid email is required"),
   ],
+  validate,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await initializeDB();
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ success: false, message: "Validation failed", error: errors.array() });
-      }
-
       const authReq = req as any;
       const lead = await Lead.create({ ...req.body, createdBy: authReq.user.id });
       res.status(201).json({ success: true, data: lead, message: "Lead created successfully" });
@@ -245,7 +226,6 @@ app.post("/api/leads",
 
 app.put("/api/leads/:id", authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await initializeDB();
     const lead = await Lead.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!lead) return res.status(404).json({ success: false, message: "Lead not found" });
     res.json({ success: true, data: lead, message: "Lead updated successfully" });
@@ -256,7 +236,6 @@ app.put("/api/leads/:id", authMiddleware, async (req: Request, res: Response, ne
 
 app.delete("/api/leads/:id", authMiddleware, adminMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await initializeDB();
     const lead = await Lead.findByIdAndDelete(req.params.id);
     if (!lead) return res.status(404).json({ success: false, message: "Lead not found" });
     res.json({ success: true, message: "Lead deleted successfully" });

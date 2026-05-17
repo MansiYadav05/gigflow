@@ -76,9 +76,9 @@ docker-compose up --build
 - ✅ Data persistence with named volumes
 - ✅ Non-root user and security best practices
 
-
 ## Project Structure
-- `/server.ts`: Combined Express server and Vite middleware.
+- `/api`: Serverless functions (backend) for Vercel.
+- `/api/lib`: Shared database models and middleware.
 - `/src/pages`: Dashboard, Login, Register, and Lead Details.
 - `/src/context`: Auth state management.
 - `/src/lib/api.ts`: Axios client with interceptors.
